@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "processor.h"
 #include "linux_parser.h"
@@ -20,15 +21,15 @@ float Processor::Utilization() {
     int iowait = cpuUsageList[LinuxParser::CPUStates::kIOwait_]; 
     int irq = cpuUsageList[LinuxParser::CPUStates::kIRQ_]; 
     int softirq = cpuUsageList[LinuxParser::CPUStates::kSoftIRQ_]; 
-    int steal = cpuUsageList[LinuxParser::CPUStates::kSteal_]; 
-    int guest = cpuUsageList[LinuxParser::CPUStates::kGuest_];
-    int guestNice = cpuUsageList[LinuxParser::CPUStates::kGuestNice_];
+    int steal = cpuUsageList[LinuxParser::CPUStates::kSteal_];
 
     // Apply formula
     int totalIdle = idle + iowait;
     int totalNonIdle = user + nice + system + irq + softirq + steal;
 
-    float totalPercent = (totalNonIdle - totalIdle) /  (totalNonIdle + totalIdle) * 100;
+    float totalPercent = static_cast<float>(totalNonIdle) / static_cast<float>(totalNonIdle + totalIdle);
+
+    //std::cout << "CPU usage: " << totalIdle << " " << totalNonIdle << " " << totalPercent << "\n";// TODO remove when finished
 
     return totalPercent;
  }

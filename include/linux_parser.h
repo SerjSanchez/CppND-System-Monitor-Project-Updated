@@ -48,7 +48,7 @@ long IdleJiffies();
 
 // Processes
 std::string Command(int pid);
-std::string Ram(int pid);
+float Ram(int pid);
 int Uid(int pid);
 std::string User(int uid);
 long int UpTime(int pid);

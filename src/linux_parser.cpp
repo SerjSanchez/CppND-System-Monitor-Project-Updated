@@ -78,17 +78,17 @@ float LinuxParser::MemoryUtilization() {
       string key, value;
       linestream >> key >> value;
         if (key == "MemTotal:") {
-            std::cout << "Total mem: " << key << " " << value << "\n";// TODO remove when finished
+            //std::cout << "Total mem: " << key << " " << value << "\n";// TODO remove when finished
             totalMem = stof(value);
         } else if (key == "MemFree:") {
-            std::cout  << "Free mem: "<< key << " " << value << "\n";// TODO remove when finished
+            //std::cout  << "Free mem: "<< key << " " << value << "\n";// TODO remove when finished
             freeMem = stof(value);
             break;
         }
     }
   }
-  float freeMemPercent = freeMem*100/totalMem;
-  float usedMemPercent = 100-freeMemPercent;
+  float freeMemPercent = freeMem/totalMem;
+  float usedMemPercent = 1-freeMemPercent;
   return usedMemPercent;
  }
 
@@ -102,7 +102,7 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> upTime;
   }
-  std::cout << "Uptime: " << upTime << " " << upTime << "\n";// TODO remove when finished
+  //std::cout << "Uptime: " << upTime << " " << upTime << "\n";// TODO remove when finished
   return stol(upTime);
 }
 
@@ -131,7 +131,7 @@ vector<int> LinuxParser::CpuUtilization() {
       linestream >> key;
       if (key == "cpu") {
         while (linestream >> value) {
-          std::cout << "CPU usage: " << key << " " << value << "\n";// TODO remove when finished
+          //std::cout << "CPU usage: " << key << " " << value << "\n";// TODO remove when finished
           cpuValues.push_back(stoi(value));
         }
         return cpuValues;
@@ -145,14 +145,14 @@ vector<int> LinuxParser::CpuUtilization() {
 int LinuxParser::TotalProcesses() { 
   int totalProcesses;
   string line;
-  std::ifstream stream(kProcDirectory + kMeminfoFilename);
+  std::ifstream stream(kProcDirectory + kStatFilename);
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
       std::istringstream linestream(line);
       string key, value;
       while (linestream >> key >> value) {
         if (key == "processes") {
-            std::cout << "Total process count: " << key << " " << value << "\n";// TODO remove when finished
+            //std::cout << "Total process count: " << key << " " << value << "\n";// TODO remove when finished
             totalProcesses = stoi(value);
             return totalProcesses;
         }
@@ -166,14 +166,14 @@ int LinuxParser::TotalProcesses() {
 int LinuxParser::RunningProcesses() { 
   int runningProcesses;
   string line;
-  std::ifstream stream(kProcDirectory + kMeminfoFilename);
+  std::ifstream stream(kProcDirectory + kStatFilename);
   if (stream.is_open()) {
     while (std::getline(stream, line)) {
       std::istringstream linestream(line);
       string key, value;
       while (linestream >> key >> value) {
         if (key == "procs_running") {
-            std::cout << "Running process count: " << key << " " << value << "\n";// TODO remove when finished
+            //std::cout << "Running process count: " << key << " " << value << "\n";// TODO remove when finished
             runningProcesses =  stoi(value);
             return runningProcesses;
         }
@@ -191,14 +191,14 @@ string LinuxParser::Command(int pid) {
   if (stream.is_open()) {
     std::getline(stream, line);
   }
-  std::cout << "Process command: " << line << "\n"; // TODO remove when finished
+  //std::cout << "Process command: " << line << "\n"; // TODO remove when finished
   return line;
 }
 
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid) { 
-  string usedRam;
+float LinuxParser::Ram(int pid) { 
+  float usedRam;
   string line;
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
   if (stream.is_open()) {
@@ -207,8 +207,8 @@ string LinuxParser::Ram(int pid) {
       string key, value;
       linestream >> key >> value;
         if (key == "VmSize:") {
-            std::cout << "Process RAM: " << key << " " << value << "\n";// TODO remove when finished
-            usedRam = value;
+            //std::cout << "Process RAM: " << key << " " << value << "\n";// TODO remove when finished
+            usedRam = stof(value);
             return usedRam;
         }
     }
@@ -228,7 +228,7 @@ int LinuxParser::Uid(int pid) {
       string key, value;
       linestream >> key >> value;
         if (key == "Uid:") {
-            std::cout << "Process Uid: " << key << " " << value << "\n";// TODO remove when finished
+            //std::cout << "Process Uid: " << key << " " << value << "\n";// TODO remove when finished
             uid = stoi(value);
             return uid;
         }
@@ -251,7 +251,7 @@ string LinuxParser::User(int uid){
       std::istringstream linestream(line);
       while (linestream >> username >> permissions >> readUid) {
         if (stoi(readUid) == uid) {
-          std::cout << "Process username: " << username << " " << readUid << "\n"; // TODO remove when finished
+          //std::cout << "Process username: " << username << " " << readUid << "\n"; // TODO remove when finished
           return username;
         }
       }
@@ -274,10 +274,10 @@ long LinuxParser::UpTime(int pid) {
       linestream >> upTime;
     }
   }
-  std::cout << "Process uptime: " << upTime << "\n"; // TODO remove when finished
+  //std::cout << "Process uptime: " << upTime << "\n"; // TODO remove when finished
   return stol(upTime);
 }
 
-float ProcessCpuUtilization(int pid) {
+float LinuxParser::ProcessCpuUtilization(int pid) {
   return 0.0;
 }

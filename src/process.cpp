@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <iomanip>
 
 #include "process.h"
 
@@ -23,8 +24,13 @@ string Process::Command() {
 }
 
 // TODO: Return this process's memory utilization
-string Process::Ram() { 
-    return LinuxParser::Ram(pid_);
+string Process::Ram() {
+    float ramKB = LinuxParser::Ram(pid_);
+    // to string with 2 decimals
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(2) << ramKB/1024.0;
+    std::string ramMB = stream.str();    
+    return ramMB;
 }
 
 // TODO: Return the user (name) that generated this process
