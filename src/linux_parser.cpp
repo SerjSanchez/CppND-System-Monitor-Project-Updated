@@ -80,7 +80,6 @@ float LinuxParser::MemoryUtilization() {
         if (key == "MemTotal:") {
             std::cout << "Total mem: " << key << " " << value << "\n";// TODO remove when finished
             totalMem = stof(value);
-            break;
         } else if (key == "MemFree:") {
             std::cout  << "Free mem: "<< key << " " << value << "\n";// TODO remove when finished
             freeMem = stof(value);
@@ -193,7 +192,7 @@ string LinuxParser::Command(int pid) {
   if (stream.is_open()) {
     std::getline(stream, line);
   }
-  std::cout << "Process uptime: " << line << "\n"; // TODO remove when finished
+  std::cout << "Process command: " << line << "\n"; // TODO remove when finished
   return line;
 }
 
@@ -241,19 +240,19 @@ int LinuxParser::Uid(int pid) {
 
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid, int uid) { 
+string LinuxParser::User(int uid){ 
   string line;
   string username;
   string readUid;
-  std::ifstream filestream(kOSPath);
+  std::ifstream filestream(kPasswordPath);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
       std::replace(line.begin(), line.end(), ':', ' ');
       string permissions;
       std::istringstream linestream(line);
-      while (linestream >> username >> permissions >> uid) {
+      while (linestream >> username >> permissions >> readUid) {
         if (stoi(readUid) == uid) {
-          std::cout << "Process sername: " << username << " " << readUid << "\n"; // TODO remove when finished
+          std::cout << "Process username: " << username << " " << readUid << "\n"; // TODO remove when finished
           return username;
         }
       }
@@ -267,11 +266,14 @@ string LinuxParser::User(int pid, int uid) {
 long LinuxParser::UpTime(int pid) {
   string upTime;
   string line;
-  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
-    // Uptime is the 14th number, so the index is 13
-    std::string upTime = line.substr(13, line.find(" "));
+    std::istringstream linestream(line);
+    for (int i = 0; i<22; i++) {
+      // 22 is the position of the uptime in the file
+      linestream >> upTime;
+    }
   }
   std::cout << "Process uptime: " << upTime << "\n"; // TODO remove when finished
   return stol(upTime);

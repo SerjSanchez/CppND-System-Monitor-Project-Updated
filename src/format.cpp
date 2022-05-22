@@ -24,4 +24,4 @@ string Format::ElapsedTime(long seconds) {
     // Concatenate to create the string
     hhmmss = hh + ":" + mm + ":" + ss;
     return hhmmss;
-    }
+}

@@ -16,6 +16,6 @@ int main() {
   LinuxParser::Command(pids[2]);
   LinuxParser::Ram(pids[2]);
   int uid = LinuxParser::Uid(pids[2]);
-  LinuxParser::User(pids[2], uid);
+  LinuxParser::User(uid);
   LinuxParser::UpTime(pids[2]);
 }
