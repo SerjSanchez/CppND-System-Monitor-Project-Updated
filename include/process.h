@@ -14,7 +14,7 @@ class Process {
     Process(int pid) 
     : pid_(pid)
     {
-        cpuUtilization_ = LinuxParser::ProcessCpuUtilization(pid);
+        calculateCpuUtilization();
     }
 
   int Pid();                               // TODO: See src/process.cpp
@@ -24,6 +24,7 @@ class Process {
   std::string Ram();                       // TODO: See src/process.cpp
   long int UpTime();                       // TODO: See src/process.cpp
   bool operator<(Process const& a) const;  // TODO: See src/process.cpp
+  void calculateCpuUtilization();
 
   // TODO: Declare any necessary private members
  private:

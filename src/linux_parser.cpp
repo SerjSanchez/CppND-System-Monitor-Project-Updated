@@ -67,7 +67,7 @@ vector<int> LinuxParser::Pids() {
   return pids;
 }
 
-// TODO: Read and return the system memory utilization
+// Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() { 
   float totalMem, freeMem;
   string line;
@@ -92,7 +92,7 @@ float LinuxParser::MemoryUtilization() {
   return usedMemPercent;
  }
 
-// TODO: Read and return the system uptime
+// Read and return the system uptime
 long LinuxParser::UpTime() { 
   string upTime;
   string line;
@@ -106,20 +106,20 @@ long LinuxParser::UpTime() {
   return stol(upTime);
 }
 
-// TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
+// Read and return the number of jiffies for the system
+long LinuxParser::Jiffies() { return 0.0; }
 
-// TODO: Read and return the number of active jiffies for a PID
+// Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
 
-// TODO: Read and return the number of active jiffies for the system
+// Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() { return 0; }
 
-// TODO: Read and return the number of idle jiffies for the system
+// Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { return 0; }
 
-// TODO: Read and return CPU utilization
+// Read and return CPU utilization
 vector<int> LinuxParser::CpuUtilization() { 
   vector<int> cpuValues;
   string line;
@@ -141,7 +141,7 @@ vector<int> LinuxParser::CpuUtilization() {
   return cpuValues;
 }
 
-// TODO: Read and return the total number of processes
+// Read and return the total number of processes
 int LinuxParser::TotalProcesses() { 
   int totalProcesses;
   string line;
@@ -162,7 +162,7 @@ int LinuxParser::TotalProcesses() {
   return totalProcesses;
 }
 
-// TODO: Read and return the number of running processes
+// Read and return the number of running processes
 int LinuxParser::RunningProcesses() { 
   int runningProcesses;
   string line;
@@ -183,7 +183,7 @@ int LinuxParser::RunningProcesses() {
   return runningProcesses;
  }
 
-// TODO: Read and return the command associated with a process
+// Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Command(int pid) { 
   string line;
@@ -195,7 +195,7 @@ string LinuxParser::Command(int pid) {
   return line;
 }
 
-// TODO: Read and return the memory used by a process
+// Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
 float LinuxParser::Ram(int pid) { 
   float usedRam;
@@ -216,7 +216,7 @@ float LinuxParser::Ram(int pid) {
   return usedRam;
 }
 
-// TODO: Read and return the user ID associated with a process
+// Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
 int LinuxParser::Uid(int pid) { 
   int uid;
@@ -269,8 +269,8 @@ long LinuxParser::UpTime(int pid) {
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    for (int i = 0; i<22; i++) {
-      // 22 is the position of the uptime in the file
+    for (int i = 0; i < 22; i++) {
+      // 22 is the position of the uptime in the file, so the index is 21
       linestream >> upTime;
     }
   }
@@ -278,6 +278,23 @@ long LinuxParser::UpTime(int pid) {
   return stol(upTime);
 }
 
-float LinuxParser::ProcessCpuUtilization(int pid) {
-  return 0.0;
+vector<int> LinuxParser::ProcessCpuUtilization(int pid) {
+  vector<int> processCpuInfo = {};
+  string line;
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
+  if (stream.is_open()) {
+    std::getline(stream, line);
+    std::istringstream linestream(line);
+    string value;
+    for (int i = 0; i < 22; i++) {
+      linestream >> value;
+      if((i >= 13 && i <= 16) 
+          || i == 21){
+        // Positions of the cpu info in the line
+        processCpuInfo.push_back(stoi(value));
+        //std::cout << "Process cpu: " << value << "\n"; // TODO remove when finished
+      }
+    }
+  }
+  return processCpuInfo;
 }

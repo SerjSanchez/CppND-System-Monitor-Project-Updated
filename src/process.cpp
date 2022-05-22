@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <iomanip>
+#include <unistd.h>
 
 #include "process.h"
 
@@ -48,4 +49,25 @@ long int Process::UpTime() {
 // REMOVE: [[maybe_unused]] once you define the function
 bool Process::operator<(Process const& a) const { 
     return this->cpuUtilization_ < a.cpuUtilization_;
+}
+
+void Process::calculateCpuUtilization() {
+    vector<int> cpuParams = LinuxParser::ProcessCpuUtilization(pid_);
+    
+    int utime, stime, cutime, cstime, starttime;
+    float hertz = sysconf(_SC_CLK_TCK);
+
+    utime = cpuParams[0];
+    stime = cpuParams[1];
+    cutime = cpuParams[2];
+    cstime = cpuParams[3];
+    starttime = cpuParams[4];
+
+    int totalTime = utime + stime + cutime + cstime;
+
+    float processUptimeTicks = LinuxParser::UpTime() * hertz;
+
+    float ticksSinceSystemStart = processUptimeTicks - starttime;
+
+    cpuUtilization_ = static_cast<float>(totalTime) / static_cast<float>(ticksSinceSystemStart);
 }
