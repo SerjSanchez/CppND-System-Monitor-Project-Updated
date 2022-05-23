@@ -29,7 +29,5 @@ float Processor::Utilization() {
 
     float totalPercent = static_cast<float>(totalNonIdle) / static_cast<float>(totalNonIdle + totalIdle);
 
-    //std::cout << "CPU usage: " << totalIdle << " " << totalNonIdle << " " << totalPercent << "\n";// TODO remove when finished
-
     return totalPercent;
  }

@@ -78,10 +78,8 @@ float LinuxParser::MemoryUtilization() {
       string key, value;
       linestream >> key >> value;
         if (key == "MemTotal:") {
-            //std::cout << "Total mem: " << key << " " << value << "\n";// TODO remove when finished
             totalMem = stof(value);
         } else if (key == "MemFree:") {
-            //std::cout  << "Free mem: "<< key << " " << value << "\n";// TODO remove when finished
             freeMem = stof(value);
             break;
         }
@@ -102,10 +100,13 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> upTime;
   }
-  //std::cout << "Uptime: " << upTime << " " << upTime << "\n";// TODO remove when finished
   return stol(upTime);
 }
 
+/* 
+* These functions were left uninplemented because I obtained these values 
+* at the same time as other ones in other functions
+*/ 
 // Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { return 0.0; }
 
@@ -131,7 +132,6 @@ vector<int> LinuxParser::CpuUtilization() {
       linestream >> key;
       if (key == "cpu") {
         while (linestream >> value) {
-          //std::cout << "CPU usage: " << key << " " << value << "\n";// TODO remove when finished
           cpuValues.push_back(stoi(value));
         }
         return cpuValues;
@@ -152,7 +152,6 @@ int LinuxParser::TotalProcesses() {
       string key, value;
       while (linestream >> key >> value) {
         if (key == "processes") {
-            //std::cout << "Total process count: " << key << " " << value << "\n";// TODO remove when finished
             totalProcesses = stoi(value);
             return totalProcesses;
         }
@@ -173,7 +172,6 @@ int LinuxParser::RunningProcesses() {
       string key, value;
       while (linestream >> key >> value) {
         if (key == "procs_running") {
-            //std::cout << "Running process count: " << key << " " << value << "\n";// TODO remove when finished
             runningProcesses =  stoi(value);
             return runningProcesses;
         }
@@ -191,7 +189,6 @@ string LinuxParser::Command(int pid) {
   if (stream.is_open()) {
     std::getline(stream, line);
   }
-  //std::cout << "Process command: " << line << "\n"; // TODO remove when finished
   return line;
 }
 
@@ -207,7 +204,6 @@ float LinuxParser::Ram(int pid) {
       string key, value;
       linestream >> key >> value;
         if (key == "VmSize:") {
-            //std::cout << "Process RAM: " << key << " " << value << "\n";// TODO remove when finished
             usedRam = stof(value);
             return usedRam;
         }
@@ -228,7 +224,6 @@ int LinuxParser::Uid(int pid) {
       string key, value;
       linestream >> key >> value;
         if (key == "Uid:") {
-            //std::cout << "Process Uid: " << key << " " << value << "\n";// TODO remove when finished
             uid = stoi(value);
             return uid;
         }
@@ -237,7 +232,7 @@ int LinuxParser::Uid(int pid) {
   return uid;
  }
 
-// TODO: Read and return the user associated with a process
+// Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::User(int uid){ 
   string line;
@@ -251,7 +246,6 @@ string LinuxParser::User(int uid){
       std::istringstream linestream(line);
       while (linestream >> username >> permissions >> readUid) {
         if (stoi(readUid) == uid) {
-          //std::cout << "Process username: " << username << " " << readUid << "\n"; // TODO remove when finished
           return username;
         }
       }
@@ -260,7 +254,7 @@ string LinuxParser::User(int uid){
   return username;
 }
 
-// TODO: Read and return the uptime of a process
+// Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::UpTime(int pid) {
   string upTime;
@@ -274,7 +268,6 @@ long LinuxParser::UpTime(int pid) {
       linestream >> upTime;
     }
   }
-  //std::cout << "Process uptime: " << upTime << "\n"; // TODO remove when finished
   return stol(upTime);
 }
 
@@ -292,7 +285,6 @@ vector<int> LinuxParser::ProcessCpuUtilization(int pid) {
           || i == 21){
         // Positions of the cpu info in the line
         processCpuInfo.push_back(stoi(value));
-        //std::cout << "Process cpu: " << value << "\n"; // TODO remove when finished
       }
     }
   }
