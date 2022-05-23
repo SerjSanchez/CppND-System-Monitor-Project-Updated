@@ -5,20 +5,4 @@
 int main() {
   System system;
   NCursesDisplay::Display(system);
-  //Test prints
-  /*LinuxParser::UpTime();
-  LinuxParser::MemoryUtilization();
-  LinuxParser::UpTime();
-  LinuxParser::CpuUtilization();
-  system.Cpu().Utilization();
-
-  LinuxParser::TotalProcesses();
-  LinuxParser::RunningProcesses();
-
-  std::vector<int> pids = LinuxParser::Pids();
-  LinuxParser::Command(pids[2]);
-  LinuxParser::Ram(pids[2]);
-  int uid = LinuxParser::Uid(pids[2]);
-  LinuxParser::User(uid);
-  LinuxParser::UpTime(pids[2]);*/
 }
