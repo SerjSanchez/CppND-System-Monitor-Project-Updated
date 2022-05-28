@@ -69,7 +69,7 @@ vector<int> LinuxParser::Pids() {
 
 // Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() { 
-  float totalMem, freeMem;
+  float totalMem = 0, freeMem = 0;
   string line;
   std::ifstream stream(kProcDirectory + kMeminfoFilename);
   if (stream.is_open()) {
@@ -92,7 +92,7 @@ float LinuxParser::MemoryUtilization() {
 
 // Read and return the system uptime
 long LinuxParser::UpTime() { 
-  string upTime;
+  string upTime = "";
   string line;
   std::ifstream stream(kProcDirectory + kUptimeFilename);
   if (stream.is_open()) {
@@ -158,7 +158,7 @@ int LinuxParser::TotalProcesses() {
       }
     }
   }
-  return totalProcesses;
+  return 0;
 }
 
 // Read and return the number of running processes
@@ -178,7 +178,7 @@ int LinuxParser::RunningProcesses() {
       }
     }
   }
-  return runningProcesses;
+  return 0;
  }
 
 // Read and return the command associated with a process
@@ -203,19 +203,18 @@ float LinuxParser::Ram(int pid) {
       std::istringstream linestream(line);
       string key, value;
       linestream >> key >> value;
-        if (key == "VmSize:") {
+        if (key == "VmRSS:") {
             usedRam = stof(value);
             return usedRam;
         }
     }
   }
-  return usedRam;
+  return 0;
 }
 
 // Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-int LinuxParser::Uid(int pid) { 
-  int uid;
+string LinuxParser::Uid(int pid) { 
   string line;
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
   if (stream.is_open()) {
@@ -224,19 +223,18 @@ int LinuxParser::Uid(int pid) {
       string key, value;
       linestream >> key >> value;
         if (key == "Uid:") {
-            uid = stoi(value);
-            return uid;
+            return value;
         }
     }
   }
-  return uid;
+  return "";
  }
 
 // Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int uid){ 
+string LinuxParser::User(int pid){ 
   string line;
-  string username;
+  string username = "";
   string readUid;
   std::ifstream filestream(kPasswordPath);
   if (filestream.is_open()) {
@@ -245,7 +243,7 @@ string LinuxParser::User(int uid){
       string permissions;
       std::istringstream linestream(line);
       while (linestream >> username >> permissions >> readUid) {
-        if (stoi(readUid) == uid) {
+        if (readUid == Uid(pid)) {
           return username;
         }
       }
@@ -268,7 +266,7 @@ long LinuxParser::UpTime(int pid) {
       linestream >> upTime;
     }
   }
-  return stol(upTime);
+  return LinuxParser::UpTime() - stol(upTime) / 100;
 }
 
 vector<int> LinuxParser::ProcessCpuUtilization(int pid) {

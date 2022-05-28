@@ -21,6 +21,7 @@ class System {
     for(int pid : pids) {
       processes_.push_back(Process(pid));
     }
+    std::sort(processes_.begin(), processes_.end());
   }
 
   Processor& Cpu();                   // See src/system.cpp

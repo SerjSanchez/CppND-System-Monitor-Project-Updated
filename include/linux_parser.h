@@ -49,7 +49,7 @@ long IdleJiffies();
 // Processes
 std::string Command(int pid);
 float Ram(int pid);
-int Uid(int pid);
+std::string Uid(int pid);
 std::string User(int uid);
 long int UpTime(int pid);
 std::vector<int> ProcessCpuUtilization(int pid);
