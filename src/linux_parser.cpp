@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <unistd.h>
 
 #include "linux_parser.h"
 
@@ -266,7 +267,7 @@ long LinuxParser::UpTime(int pid) {
       linestream >> upTime;
     }
   }
-  return LinuxParser::UpTime() - stol(upTime) / 100;
+  return LinuxParser::UpTime() - stol(upTime) / sysconf(_SC_CLK_TCK);
 }
 
 vector<int> LinuxParser::ProcessCpuUtilization(int pid) {
