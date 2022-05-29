@@ -56,17 +56,22 @@ void Process::calculateCpuUtilization() {
     int utime, stime, cutime, cstime, starttime;
     float hertz = sysconf(_SC_CLK_TCK);
 
-    utime = cpuParams[0];
-    stime = cpuParams[1];
-    cutime = cpuParams[2];
-    cstime = cpuParams[3];
-    starttime = cpuParams[4];
+    if(cpuParams.size() == 5) {
+        utime = cpuParams[0];
+        stime = cpuParams[1];
+        cutime = cpuParams[2];
+        cstime = cpuParams[3];
+        starttime = cpuParams[4];
 
-    int totalTime = utime + stime + cutime + cstime;
+        int totalTime = utime + stime + cutime + cstime;
 
-    float processUptimeTicks = LinuxParser::UpTime() * hertz;
+        float processUptimeTicks = LinuxParser::UpTime() * hertz;
 
-    float ticksSinceSystemStart = processUptimeTicks - starttime;
+        float ticksSinceSystemStart = processUptimeTicks - starttime;
 
-    cpuUtilization_ = static_cast<float>(totalTime) / static_cast<float>(ticksSinceSystemStart);
+        cpuUtilization_ = static_cast<float>(totalTime) / static_cast<float>(ticksSinceSystemStart);
+    } else {
+        cpuUtilization_= 0;
+    }
 }
+
