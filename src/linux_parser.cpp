@@ -58,7 +58,7 @@ vector<int> LinuxParser::Pids() {
     if (file->d_type == DT_DIR) {
       // Is every character of the name a digit?
       string filename(file->d_name);
-      if (std::all_of(filename.begin(), filename.end(), isdigit)) {
+      if (std::all_of(filename.begin(), filename.end(), isdigit) && isNumber(filename)) {
         int pid = stoi(filename);
         pids.push_back(pid);
       }
@@ -78,9 +78,9 @@ float LinuxParser::MemoryUtilization() {
       std::istringstream linestream(line);
       string key, value;
       linestream >> key >> value;
-        if (key == "MemTotal:") {
+        if (key == "MemTotal:" && isNumber(value)) {
             totalMem = stof(value);
-        } else if (key == "MemFree:") {
+        } else if (key == "MemFree:" && isNumber(value)) {
             freeMem = stof(value);
             break;
         }
@@ -101,7 +101,11 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> upTime;
   }
-  return stol(upTime);
+    if (isNumber(upTime)) {
+      return stol(upTime);
+    } else {
+      return 0;
+    }
 }
 
 /* 
@@ -133,7 +137,9 @@ vector<int> LinuxParser::CpuUtilization() {
       linestream >> key;
       if (key == "cpu") {
         while (linestream >> value) {
-          cpuValues.push_back(stoi(value));
+          if(isNumber(value)) {
+            cpuValues.push_back(stoi(value));
+          }
         }
         return cpuValues;
       }
@@ -152,7 +158,7 @@ int LinuxParser::TotalProcesses() {
       std::istringstream linestream(line);
       string key, value;
       while (linestream >> key >> value) {
-        if (key == "processes") {
+        if (key == "processes" && isNumber(value)) {
             totalProcesses = stoi(value);
             return totalProcesses;
         }
@@ -172,7 +178,7 @@ int LinuxParser::RunningProcesses() {
       std::istringstream linestream(line);
       string key, value;
       while (linestream >> key >> value) {
-        if (key == "procs_running") {
+        if (key == "procs_running" && isNumber(value)) {
             runningProcesses =  stoi(value);
             return runningProcesses;
         }
@@ -204,7 +210,7 @@ float LinuxParser::Ram(int pid) {
       std::istringstream linestream(line);
       string key, value;
       linestream >> key >> value;
-        if (key == "VmRSS:") {
+        if (key == "VmRSS:" && isNumber(value)) {
             usedRam = stof(value);
             return usedRam;
         }
@@ -267,7 +273,11 @@ long LinuxParser::UpTime(int pid) {
       linestream >> upTime;
     }
   }
-  return LinuxParser::UpTime() - stol(upTime) / sysconf(_SC_CLK_TCK);
+  if (isNumber(upTime)) {
+    return LinuxParser::UpTime() - stol(upTime) / sysconf(_SC_CLK_TCK);
+  } else {
+    return 0;
+  }
 }
 
 vector<int> LinuxParser::ProcessCpuUtilization(int pid) {
@@ -283,9 +293,22 @@ vector<int> LinuxParser::ProcessCpuUtilization(int pid) {
       if((i >= 13 && i <= 16) 
           || i == 21){
         // Positions of the cpu info in the line
-        processCpuInfo.push_back(stoi(value));
+        if (isNumber(value)) {
+          processCpuInfo.push_back(stoi(value));
+        }
       }
     }
   }
   return processCpuInfo;
+}
+
+bool LinuxParser::isNumber(const std::string& s)
+{
+      std::stringstream stream;                   
+       double number;
+
+       stream<<s;
+       stream>>number;
+
+       return stream.eof();
 }
